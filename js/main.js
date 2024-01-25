@@ -136,4 +136,56 @@ new Vue({
             return this.columnIndex === 0;
           },
     },
+    methods: {
+        addCard(columnIndex) {
+            if (columnIndex === 0 && this.isFormValid) {
+                const newCard = {
+                    title: this.newCard.title,
+                    description: this.newCard.description,
+                    deadline: this.newCard.deadline,
+                    dateCreated: new Date().toLocaleString(),
+                    lastEdited: new Date().toLocaleString()
+                };
+                this.columns[columnIndex].cards.push(newCard);
+                this.clearNewCard();
+            }
+        },
+        clearNewCard() {
+            this.newCard = { title: '', description: '', deadline: '' };
+        },
+        deleteCard(columnIndex, cardIndex) {
+            if (columnIndex >= 0 && columnIndex < this.columns.length) {
+                if (cardIndex >= 0 && cardIndex < this.columns[columnIndex].cards.length) {
+                    this.columns[columnIndex].cards.splice(cardIndex, 1);
+                }
+            }
+        },
+        moveToInProgress(originalCard, columnIndex, cardIndex) {
+            const inProgressIndex = 1;
+
+            this.columns[inProgressIndex].cards.push({
+                title: originalCard.title,
+                description: originalCard.description,
+                deadline: originalCard.deadline,
+                dateCreated: originalCard.dateCreated,
+                lastEdited: originalCard.lastEdited
+            });
+
+            this.columns[columnIndex].cards.splice(cardIndex, 1);
+        },
+        moveToTesting(originalCard, columnIndex, cardIndex) {
+            const testingIndex = 2;
+
+            this.columns[testingIndex].cards.push({
+                title: originalCard.title,
+                description: originalCard.description,
+                deadline: originalCard.deadline,
+                dateCreated: originalCard.dateCreated,
+                lastEdited: originalCard.lastEdited,
+                repeatReason: originalCard.repeatReason,
+            });
+
+            this.columns[columnIndex].cards.splice(cardIndex, 1);
+        },
+    }
 });
