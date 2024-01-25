@@ -12,9 +12,10 @@
 <body>
     <div id="app">
         <div class="columns">
-            <div class="column" v-for="(column, columnIndex) in columns" :key="columnIndex">
+            <div class="column" v-for="(column, columnIndex) in columns" :key="columnIndex"> <!-- Создание столбцов -->
                 <h2>{{ column.name }}</h2>
-                <kanban-card
+                <!-- Для отображения карточек -->
+                <kanban-card 
                     v-for="(card, cardIndex) in column.cards"
                     :key="cardIndex"
                     :card="card"
@@ -27,8 +28,8 @@
                     @move-to-done="moveToDone"
                     @return-to-in-progress="returnToInProgress"
                 ></kanban-card>
-                
-                <form v-if="columnIndex === 0" @submit.prevent="addCard(columnIndex)">
+
+                <form v-if="columnIndex === 0" @submit.prevent="addCard(columnIndex)"> <!-- Создание карточек -->
                     <h3>Форма</h3>
                     <input v-model="newCard.title" placeholder="Заголовок" required />
                     <input v-model="newCard.description" placeholder="Описание" required />
@@ -37,6 +38,6 @@
                 </form>
             </div>
         </div>
-    </div>     
+    </div>
 </body>
 </html>
