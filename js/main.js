@@ -187,5 +187,44 @@ new Vue({
 
             this.columns[columnIndex].cards.splice(cardIndex, 1);
         },
+        moveToDone(originalCard, columnIndex, cardIndex) {
+            const doneIndex = 3;
+
+            this.columns[doneIndex].cards.push({
+                title: originalCard.title,
+                description: originalCard.description,
+                deadline: originalCard.deadline,
+                dateCreated: originalCard.dateCreated,
+                lastEdited: originalCard.lastEdited
+            });
+
+            this.columns[columnIndex].cards.splice(cardIndex, 1);
+        },
+        returnToInProgress(originalCard, columnIndex, cardIndex) {
+            const inProgressIndex = 1;
+
+
+            if (repeatReasonInCompleted) {
+                const isCardAlreadyInInProgress = this.$parent.columns[inProgressIndex].cards.some(card => card.title === this.card.title);
+    
+                if (!isCardAlreadyInInProgress) {
+                    this.$parent.columns[inProgressIndex].cards.push({
+                        title: this.card.title,
+                        description: this.card.description,
+                        deadline: this.card.deadline,
+                        dateCreated: this.card.dateCreated,
+                        lastEdited: new Date().toLocaleString(),
+                        repeatReason: this.card.repeatReason,
+                    });
+    
+                    this.$parent.columns[this.columnIndex].cards.splice(this.cardIndex, 1);
+                    this.showEditForm = false;
+                } else {
+                    alert("Карточка уже находится в столбце 'Задачи в работе'");
+                }
+            } else {
+                alert("Нельзя вернуть задачу без указания 'Причина повторения'");
+            }
+        },
     }
 });
