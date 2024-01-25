@@ -226,5 +226,31 @@ new Vue({
                 alert("Нельзя вернуть задачу без указания 'Причина повторения'");
             }
         },
+        moveToCompletedWithDeadlineCheck(originalCard, columnIndex, cardIndex) {
+            const completedIndex = 3;
+
+            const deadline = new Date(originalCard.deadline);
+            const currentDate = new Date();
+
+            if (currentDate > deadline) {
+                originalCard.status = 'С опозданием';
+            } else {
+                originalCard.status = 'Закончено во время';
+            }
+
+            const cardToMove = {
+                title: originalCard.title,
+                description: originalCard.description,
+                deadline: originalCard.deadline,
+                dateCreated: originalCard.dateCreated,
+                lastEdited: originalCard.lastEdited,
+                status: originalCard.status,
+                repeatReason: originalCard.repeatReason,
+            };
+        
+            this.$parent.columns[completedIndex].cards.push(cardToMove);
+        
+            this.$parent.columns[columnIndex].cards.splice(cardIndex, 1);
+        }
     }
 });
