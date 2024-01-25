@@ -40,4 +40,28 @@ Vue.component('kanban-card', {
             editedRepeatReason: this.card.repeatReason,
         };
     },
+    mounted() {
+        console.log("repeatReason:", this.card.repeatReason, "columnIndex:", this.columnIndex);
+    },
+    methods: {
+        editCard() {
+            this.showEditForm = true;
+        },
+        saveEdits() {
+            this.card.title = this.editedTitle;
+            this.card.description = this.editedDescription;
+            this.card.deadline = this.editedDeadline;
+            this.card.repeatReason = this.editedRepeatReason;
+            this.card.lastEdited = new Date().toLocaleString();
+            this.showEditForm = false;
+
+            this.$emit('save-edits');
+        },
+        cancelEdits() {
+            this.showEditForm = false;
+        },
+        deleteCard() {
+            this.$emit('delete-card', this.columnIndex, this.cardIndex);
+        },
+    },
 });
