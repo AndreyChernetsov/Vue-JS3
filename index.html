@@ -27,6 +27,7 @@
                     @move-to-done="moveToDone"
                     @return-to-in-progress="returnToInProgress"
                 ></kanban-card>
+                
                 <form v-if="columnIndex === 0" @submit.prevent="addCard(columnIndex)">
                     <h3>Форма</h3>
                     <input v-model="newCard.title" placeholder="Заголовок" required />
