@@ -63,5 +63,56 @@ Vue.component('kanban-card', {
         deleteCard() {
             this.$emit('delete-card', this.columnIndex, this.cardIndex);
         },
+        moveToInProgress() {
+            this.$emit('move-to-in-progress', this.card, this.columnIndex, this.cardIndex);
+        },
+        moveToTesting() {
+            this.$emit('move-to-testing', this.card, this.columnIndex, this.cardIndex);
+        },
+        moveToDone() {
+            this.$emit('move-to-done', this.card, this.columnIndex, this.cardIndex);
+        },
+        returnToInProgress() {
+            const inProgressIndex = 1;
+
+            this.$emit('save-edits', {
+                repeatReason: this.editedRepeatReason,
+            });
+
+            this.$parent.columns[inProgressIndex].cards.push({
+                title: this.card.title,
+                description: this.card.description,
+                deadline: this.card.deadline,
+                dateCreated: this.card.dateCreated,
+                lastEdited: new Date().toLocaleString(),
+                repeatReason: this.editedRepeatReason,
+            });
+
+            this.$parent.columns[this.columnIndex].cards.splice(this.cardIndex, 1);
+            this.showEditForm = false;
+        },
+        moveToCompletedWithDeadlineCheck() {
+            const completedIndex = 3;
+            const deadline = new Date(this.card.deadline);
+            const currentDate = new Date();
+
+            if (currentDate > deadline) {
+                this.card.status = 'Опоздание';
+            } else {
+                this.card.status = 'Закончено во время';
+            }
+
+            this.$parent.columns[completedIndex].cards.push({
+                title: this.card.title,
+                description: this.card.description,
+                deadline: this.card.deadline,
+                dateCreated: this.card.dateCreated,
+                lastEdited: new Date().toLocaleString(),
+                status: this.card.status,
+                repeatReason: this.card.repeatReason,
+            });
+
+            this.$parent.columns[this.columnIndex].cards.splice(this.cardIndex, 1);
+        },
     },
 });
