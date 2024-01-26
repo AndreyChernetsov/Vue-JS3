@@ -18,7 +18,6 @@ Vue.component('kanban-card', { //Представляет карточку на 
                 <button v-if="columnIndex === 1" @click="moveToTesting">Перенести в тестирование</button>
                 <button v-if="columnIndex === 2" @click="moveToDone">Перенести в выполненные</button>
                 <button v-if="columnIndex === 2 && card.repeatReason !== undefined" @click="returnToInProgress">Вернуть</button>
-                <button v-if="columnIndex === 3" @click="moveToCompletedWithDeadlineCheck">Проверить статус </button>
             </div>
 
             <div v-if="showEditForm" class="edit-form">
@@ -191,12 +190,22 @@ new Vue({ //экзеипляр для всего приложения
         moveToDone(originalCard, columnIndex, cardIndex) { //перемещение карточки из текущей колонки в колонку Выполненные задачи
             const doneIndex = 3;
 
+            const deadline = new Date(originalCard.deadline); //Создается объект даты deadline на основе дедлайна из оригинальной карточки
+            const currentDate = new Date(); //Создается объект текущей даты
+
+            if (currentDate > deadline) { //Выполняется проверка просрочена ли дата дедлайна
+                originalCard.status = 'С опозданием';
+            } else {
+                originalCard.status = 'Закончено во время';
+            }
+
             this.columns[doneIndex].cards.push({ //Создается новый объект карточки в колонке Выполненные задачи используя данные из оригинальной карточки
                 title: originalCard.title,
                 description: originalCard.description,
                 deadline: originalCard.deadline,
                 dateCreated: originalCard.dateCreated,
-                lastEdited: originalCard.lastEdited
+                lastEdited: originalCard.lastEdited,
+                status: originalCard.status
             });
 
             this.columns[columnIndex].cards.splice(cardIndex, 1); //Удаляется из текущей колонки
